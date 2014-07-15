@@ -5,9 +5,11 @@ var through = require('through2');
 var watchify = require('watchify');
 var source = require('vinyl-source-stream');
 
-var cache = {};
+var browserifyCache = {};
+var watchifyCache = {};
 
 function getBundle(file, opt) {
+  var cache = opt.watch ? watchifyCache : browserifyCache;
   if (cache[file.path]) return cache[file.path];
 
   var bundle = opt.watch ? watchify(opt) : watchify.browserify(opt);
