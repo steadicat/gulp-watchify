@@ -50,8 +50,13 @@ module.exports = function(opt) {
         opt.watch !== false ? '(watch mode)':''
       );
 
-      var newStream = bundle.bundle(opt).pipe(source('./'+file.relative));
-
+      var newStream = bundle.bundle(opt)
+        .on('error', function(error) {
+          stream.emit('error', error);
+          stream.emit('end');
+          callback();
+        })
+        .pipe(source('./'+file.relative));
       newStream.on('data', function(data) {
         stream.push(data);
       });
