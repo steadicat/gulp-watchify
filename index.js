@@ -63,7 +63,7 @@ module.exports = function(opt) {
         opt.watch !== false ? '(watch mode)':''
       );
 
-      var newStream = bundle.bundle(opt)
+      var newStream = bundle.bundle(merge({}, opt))
         .on('error', function(error) {
           stream.emit('error', error);
           stream.emit('end');
