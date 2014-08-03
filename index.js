@@ -66,8 +66,7 @@ module.exports = function(opt) {
       var newStream = bundle.bundle(merge({}, opt))
         .on('error', function(error) {
           stream.emit('error', error);
-          stream.emit('end');
-          callback();
+          bundle.first && callback();
         })
         .pipe(source('./'+file.relative));
       newStream.on('data', function(data) {
