@@ -9,11 +9,30 @@ var source = require('vinyl-source-stream');
 var browserifyCache = {};
 var watchifyCache = {};
 
+var globalCache = {};
+var packageCache = {};
+
 function getBundle(file, opt) {
   var cache = opt.watch ? watchifyCache : browserifyCache;
   if (cache[file.path]) return cache[file.path];
 
-  var bundle = opt.watch ? watchify(opt) : browserify(opt);
+  var transforms = opt.transforms || [];
+  delete opt.transforms;
+  var external = opt.external || [];
+  delete opt.external;
+  var require = opt.require || [];
+  delete opt.require;
+
+  // Required browserify options
+  if (opt.watch) {
+    opt.cache = globalCache;
+    opt.packageCache = packageCache;
+    opt.fullPaths = true;
+  }
+
+  var bundle = browserify(opt);
+  if (opt.watch) bundle = watchify(bundle);
+
   cache[file.path] = bundle;
   opt.setup && opt.setup(bundle);
 
@@ -22,17 +41,12 @@ function getBundle(file, opt) {
     opt.requireSelf && bundle.require(self);
   }
 
-  var transforms = opt.transforms || [];
   for (var i = 0; i < transforms.length; i++) {
     bundle.transform(transforms[i]);
   }
-
-  var external = opt.external || [];
   for (i = 0; i < external.length; i++) {
     bundle.external(external[i][0], external[i][1]);
   }
-
-  var require = opt.require || [];
   for (i = 0; i < require.length; i++) {
     bundle.require(require[i][0], require[i][1]);
   }
@@ -64,7 +78,7 @@ module.exports = function(opt) {
         opt.watch !== false ? '(watch mode)':''
       );
 
-      var newStream = bundle.bundle(merge({}, opt))
+      var newStream = bundle.bundle()
         .on('error', function(error) {
           stream.emit('error', error);
           //bundle.first && callback();
