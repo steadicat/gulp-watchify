@@ -3,6 +3,7 @@ var gutil = require('gulp-util');
 var merge = require('deepmerge');
 var through = require('through2');
 var watchify = require('watchify');
+var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 
 var browserifyCache = {};
@@ -12,7 +13,7 @@ function getBundle(file, opt) {
   var cache = opt.watch ? watchifyCache : browserifyCache;
   if (cache[file.path]) return cache[file.path];
 
-  var bundle = opt.watch ? watchify(opt) : watchify.browserify(opt);
+  var bundle = opt.watch ? watchify(opt) : browserify(opt);
   cache[file.path] = bundle;
   opt.setup && opt.setup(bundle);
 

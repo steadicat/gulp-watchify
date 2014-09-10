@@ -24,8 +24,9 @@
   },
   "homepage": "https://github.com/steadicat/gulp-watchify",
   "dependencies": {
-    "gulp-util": "^2.2.14",
+    "browserify": "^5.11.1",
     "deepmerge": "^0.2.7",
+    "gulp-util": "^2.2.14",
     "through2": "^0.4.1",
     "vinyl-source-stream": "^0.1.1",
     "watchify": "^1.0.2"
