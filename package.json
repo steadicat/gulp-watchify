@@ -1,6 +1,6 @@
 {
   "name": "gulp-watchify",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "integrates watchify with gulp.js",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,6 @@
     "vinyl-source-stream": "^0.1.1"
   },
   "peerDependencies": {
-    "watchify": "^0.6.1"
+    "watchify": "^1.0.2"
   }
 }
